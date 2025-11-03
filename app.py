@@ -3,9 +3,16 @@ import pandas as pd
 import plotly as pl
 from streamlit_dynamic_filters import DynamicFilters
 
-st.title("Visualisation des données des vehicules 🚙")
-df = pd.read_csv("vehicules_nettoyes.csv")
+st.set_page_config(layout="wide", page_icon=":bar_chart:")
 
+st.title("Visualisation des données des vehicules 🚙")
+df = pd.read_csv("vehicules_nettoyes_finale.csv")
+
+
+matricule_input = st.sidebar.text_input("Entre la matricule")
+if matricule_input:
+
+    df = df[df['veh_immatriculation']==matricule_input.upper()]
 
 
 # Filtrage par marque
@@ -27,15 +34,15 @@ if model:
 
 
 
-veh_immatriculation_dispo = df[df['suspect'] == 'oui']['veh_immatriculation'].unique().tolist()
-veh_immatriculation = st.sidebar.multiselect("Matricules suspects", veh_immatriculation_dispo)
+veh_immatriculation_dispo = df[df['anomalie'] == 'oui']['veh_immatriculation'].unique().tolist()
+veh_immatriculation = st.sidebar.multiselect("Matricules anomalies", veh_immatriculation_dispo)
 if veh_immatriculation:
     df = df[df['veh_immatriculation'].isin(veh_immatriculation)]
 
 
 enregistrement = df['veh_nombre_de_place'].count()
 nb_vehicule = df['veh_immatriculation'].nunique()
-nb_vehicule_suspect = df[df['suspect'] == 'oui']['veh_immatriculation'].nunique()
+nb_vehicule_anomalie = df[df['anomalie'] == 'oui']['veh_immatriculation'].nunique()
 
 # Fonction pour créer une carte
 def kpi_card(title, value, emoji):
@@ -61,7 +68,7 @@ with col2:
     kpi_card("Nombre des vehicules", nb_vehicule, "🚙")
 
 with col3:
-    kpi_card("vehicules suspects", nb_vehicule_suspect, "🧾")
+    kpi_card("vehicules anomalies", nb_vehicule_anomalie, "🧾")
 
 
 
