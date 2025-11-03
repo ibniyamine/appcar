@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import plotly as pl
-from streamlit_dynamic_filters import DynamicFilters
+#import plotly as pl
+#from streamlit_dynamic_filters import DynamicFilters"
 
 st.set_page_config(layout="wide", page_icon=":bar_chart:")
 
