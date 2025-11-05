@@ -6,8 +6,8 @@ credentials:
       password: abc # To be replaced with hashed password
     admin:
       email: rbriggs@gmail.com
-      name: admin admin
-      password: def # To be replaced with hashed password
+      name: sidiki Tall
+      password: Passer@123 # To be replaced with hashed password
 cookie:
   expiry_days: 0
   key: random_signature_key # Must be string

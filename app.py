@@ -43,8 +43,8 @@ if st.session_state.get('authentication_status') is False or st.session_state.ge
 if st.session_state.get('authentication_status'):
     with st.sidebar:
         authenticator.logout()
-        st.write(f'Welcome *{st.session_state["name"]}*')
-    st.title("📊 Tableau de bord sécurisé")
+        st.write(f'Bienvenue *{st.session_state["name"]}*')
+    st.title("📊 Tableau de bord de visualisation des vehicules")
     df = pd.read_csv("vehicules_nettoyes_finale.csv")
     # filtrer par date
     ## conversion de la colonne date
