@@ -46,15 +46,16 @@ if st.session_state.get('authentication_status'):
         st.write(f'Bienvenue *{st.session_state["name"]}*')
     st.title("📊 Tableau de bord de visualisation des vehicules")
     df = pd.read_csv("vehicules_nettoyes_finale.csv")
+    
     # filtrer par date
     ## conversion de la colonne date
     df['veh_date_circulation'] = pd.to_datetime(df['veh_date_circulation'], errors='coerce')
 
     # Définir la date limite
-    date_limite = pd.Timestamp('2025-08-31')
+    # date_limite = pd.Timestamp('2025-08-31')
 
     # Remplacer les dates supérieures à la limite
-    df.loc[df['veh_date_circulation'] > date_limite, 'veh_date_circulation'] = date_limite
+    # df.loc[df['veh_date_circulation'] > date_limite, 'veh_date_circulation'] = date_limite
 
     # Définir les bornes possibles
     min_date = df['veh_date_circulation'].min().date()
@@ -117,10 +118,27 @@ if st.session_state.get('authentication_status'):
     if veh_immatriculation:
         df = df[df['veh_immatriculation'].isin(veh_immatriculation)]
 
+    statuts_disponibles = df['anomalie'].unique().tolist()
+
+    # Multiselect dans la sidebar
+    statut_selection = st.multiselect(
+        "Filtrer par statut d'anomalie oui/non:",
+        options=statuts_disponibles
+    )
+
+    # Filtrage du DataFrame
+    if statut_selection:
+        df = df[df['anomalie'].isin(statut_selection)]
+
 
     enregistrement = df['veh_nombre_de_place'].count()
     nb_vehicule = df['veh_immatriculation'].nunique()
     nb_vehicule_anomalie = df[df['anomalie'] == 'oui']['veh_immatriculation'].nunique()
+    nb_vehicule_clean = nb_vehicule - nb_vehicule_anomalie
+
+
+    
+
 
     # Fonction pour créer une carte
     def kpi_card(title, value, emoji):
@@ -137,7 +155,7 @@ if st.session_state.get('authentication_status'):
         """, unsafe_allow_html=True)
 
     # Affichage en colonnes
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         kpi_card("Nombre d'enregistrement", f"{enregistrement:,.0f}", "👥")
@@ -148,11 +166,14 @@ if st.session_state.get('authentication_status'):
     with col3:
         kpi_card("vehicules anomalies", nb_vehicule_anomalie, "🧾")
 
+    with col4:
+        kpi_card("vehicules cleans", nb_vehicule_clean, "🧾")
+
 
 
     st.write("")
 
-    st.dataframe(df.head(10))
+    st.dataframe(df)
 
     # Nombre de voiture par mois/année
     st.subheader("Nombre de voiture par mois/année")
